@@ -1,26 +1,26 @@
 const listeMots = ["Cachalot", "Pétunia", "Serviette"];
+const listePhrases = ["Pas de panique !", "La vie, l'univers et le reste", "Merci pour le poisson"];
 let score = 0;
+let choix = prompt("Veuillez choisir la liste: mots ou phrases. Pour choisir, tapez 'mots' ou 'phrases'.");
 
-let motUtilisateur = prompt("Entrez le mot :" + listeMots[0]);
-
-if (motUtilisateur === listeMots[0]) {
-    score ++;
-} else {
-    console.log("Vous avez fait une erreur de frappe.");
+while (choix !== "mots" && choix !== "phrases") {
+    choix = prompt("Erreur de saisie. Veuillez choisir la liste: mots ou phrases. Pour choisir, tapez 'mots' ou 'phrases'.");
 }
 
-motUtilisateur = prompt("Entrez le mot :" + listeMots[1]);
-
-if (motUtilisateur === listeMots[1]) {
-    score ++;
+if (choix === "mots") {
+    for (let i = 0; i < listeMots.length; i++) {
+        let motUtilisateur = prompt("Entrez le mot :" + listeMots[i]);
+        if (motUtilisateur === listeMots[i]) {
+            score++;
+        }
+    }
+    console.log("Votre score est de " + score + " sur " + listeMots.length);
 } else {
-    console.log("Vous avez fait une erreur de frappe.");
-}
-
-motUtilisateur = prompt("Entrez le mot :" + listeMots[2]);
-
-if (motUtilisateur === listeMots[2]) {
-    score ++;
-} else {
-    console.log("Vous avez fait une erreur de frappe.");
+    for (let i = 0; i < listePhrases.length; i++) {
+        let phraseUtilisateur = prompt("Entrez le mot :" + listePhrases[i]);
+        if (phraseUtilisateur === listePhrases[i]) {
+            score++;
+        }
+    }
+    console.log("Votre score est de " + score + " sur " + listePhrases.length);
 }
