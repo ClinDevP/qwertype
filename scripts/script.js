@@ -21,9 +21,11 @@ function lancerBoucleDeJeu(liste) {
   return score;
 }
 
-// La fonction qui génère le résultat sous forme de phrase
+// La fonction qui insère le résultat à l'endroit dédié de la page html
 function afficherResultat(scoreObtenu, nombreMotProposes) {
-  console.log("Votre score est de " + scoreObtenu + " sur " + nombreMotProposes);
+  let spanScore = document.querySelector(".zoneScore span");
+  let affichageScore = `${scoreObtenu} / ${nombreMotProposes}`;
+  spanScore.innerHTML = affichageScore;
 }
 
 // La fonction qui lance le jeu
