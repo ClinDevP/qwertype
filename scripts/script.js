@@ -2,15 +2,26 @@
 Ce fichier contient toutes les fonctions nécessaires au fonctionnement du lancerJeu.
  */
 
-// La fonction qui demande à l'utilisateur de choisir une liste de mots ou de phrases
-/* function choisirPhrasesOuMots() {
-  let choix = prompt(
-    "Veuillez choisir la liste: mots ou phrases. Pour choisir, tapez 'mots' ou 'phrases'."
-  );
-  while (choix !== "mots" && choix !== "phrases") {
-    choix = prompt("Erreur de saisie. Tapez 'mots' ou 'phrases'.");
+/*
+ *La fonction qui demande à l'utilisateur de choisir une liste de mots ou de phrases
+ */
+/* function choisirPhrasesOuMots(liste) {
+  let optionSource = document.querySelectorAll("input[type='radio']");
+  let valeurChoix = "";
+  for (i = 0; i < optionSource.length; i++) {
+    if (optionSource[i].checked) {
+      valeurChoix = optionSource[i].value;
+      break;
+    }
   }
-  return choix;
+
+  if (valeurChoix === "1") {
+    liste = listeMots;
+  } else {
+    liste = listePhrases;
+  }
+
+  return liste;
 } */
 
 /*
@@ -37,11 +48,15 @@ function lancerJeu() {
   // Initialisation
   let score = 0;
   let i = 0;
-  // Récupération des éléments "bouton de validation" et "champ de saisie" depuis le DOM
+  let listeProposition = listeMots;
+
+  // Récupération des éléments "input radio mots", "bouton de validation" et "champ de saisie" depuis le DOM
   let btnValiderMot = document.getElementById("btnValiderMot");
   let inputEcriture = document.getElementById("inputEcriture");
-  // Affichage du premier mot dès le début
-  afficherProposition(listeMots[i]);
+
+  // Afficher le premier texte dès le début
+  afficherProposition(listeProposition[i]);
+
   // Instructions exécutées lorsque l'utilisateur clique sur le bouton
   btnValiderMot.addEventListener("click", () => {
     //Si le texte saisi par l'utilisateur correspond au mot proposé, on augmente le score
@@ -62,6 +77,24 @@ function lancerJeu() {
       afficherProposition(listeMots[i]);
     }
   });
+
+  // Écouter le choix de l'utilisateur (mots/phrases)
+  let listeBtnRadio = document.querySelectorAll(".optionSource input");
+  for (let index = 0; index < listeBtnRadio.length; index++) {
+    listeBtnRadio[index].addEventListener("change", (event) => {
+      // Si c'est le premier élément qui a été modifié, alors nous voulons
+      // jouer avec la listeMots.
+      if (event.target.value === "1") {
+        listeProposition = listeMots;
+      } else {
+        // Sinon nous voulons jouer avec la liste des phrases
+        listeProposition = listePhrases;
+      }
+      // Afficher le texte selon le choix de l'utilisateur
+      afficherProposition(listeProposition[i]);
+    });
+  }
+
   // Affichage du score au début
   afficherResultat(score, i);
 }
