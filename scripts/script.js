@@ -24,21 +24,35 @@ Ce fichier contient toutes les fonctions nécessaires au fonctionnement du lance
   return liste;
 } */
 
-/*
+/**
  * Fonction qui insère le résultat à l’endroit prévu dans la page HTML
+ * @param {number} scoreObtenu : le score de l'utilisateur
+ * @param {number} nbMotsProposes : le nombre de mots proposés à l'utilisateur
  */
-function afficherResultat(scoreObtenu, nbMotProposes) {
+function afficherResultat(scoreObtenu, nbMotsProposes) {
   let spanScore = document.querySelector(".zoneScore span");
-  let affichageScore = `${scoreObtenu} / ${nbMotProposes}`;
+  let affichageScore = `${scoreObtenu} / ${nbMotsProposes}`;
   spanScore.innerHTML = affichageScore;
 }
 
-/*
+/**
  * Fonction qui affiche à chaque fois un mot de la liste dans l’ordre défini
+ * @param {string} proposition : la proposition à afficher
  */
 function afficherProposition(proposition) {
   let zoneProposition = document.querySelector(".zoneProposition");
   zoneProposition.innerText = proposition;
+}
+
+/**
+ * Cette fonction construit et affiche l'email.
+ * @param {string} nom : le nom du joueur
+ * @param {string} email : l'email de la personne avec qui il veut partager son score
+ * @param {string} score : le score.
+ */
+function afficherEmail(nom, email, score) {
+  let mailto = `mailto:${email}?subject=Partage du score QwerType&body=Salut, je suis ${nom} et je viens de réaliser le score ${score} sur le site de QwerType !`;
+  location.href = mailto;
 }
 
 /*
@@ -46,6 +60,7 @@ function afficherProposition(proposition) {
  */
 function lancerJeu() {
   // Initialisation
+  initAddEventListenerPopup();
   let score = 0;
   let i = 0;
   let listeProposition = listeMots;
@@ -94,6 +109,25 @@ function lancerJeu() {
       afficherProposition(listeProposition[i]);
     });
   }
+
+  // Récupérer la balise form
+  let baliseForm = document.querySelector("form");
+  // Récupérer les valeurs de nom, email et appeler la fonction afficherEmail
+  baliseForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let inputNom = document.getElementById("nom");
+    let nom = inputNom.value;
+
+    let inputEmail = document.getElementById("email");
+    let email = inputEmail.value;
+
+    // Composer le score
+    let scoreEmail = `${score}/${i}`;
+
+    // Rédiger et envoyer le mail
+    afficherEmail(nom, email, scoreEmail);
+  });
 
   // Affichage du score au début
   afficherResultat(score, i);
