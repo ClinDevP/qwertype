@@ -48,11 +48,34 @@ function afficherProposition(proposition) {
  * Cette fonction construit et affiche l'email.
  * @param {string} nom : le nom du joueur
  * @param {string} email : l'email de la personne avec qui il veut partager son score
- * @param {string} score : le score.
+ * @param {string} score : le score
  */
 function afficherEmail(nom, email, score) {
   let mailto = `mailto:${email}?subject=Partage du score QwerType&body=Salut, je suis ${nom} et je viens de réaliser le score ${score} sur le site de QwerType !`;
   location.href = mailto;
+}
+
+/**
+ * Fonction qui va prendre le nom à tester en paramètre et retourner true si le nom est valide, false sinon
+ * @param {string} nom : le nom à tester
+ */
+function validerNom(nom) {
+  let regex = new RegExp("^[A-Za-z]{2,}$");
+  let isValid = regex.test(nom);
+  return isValid;
+}
+
+/**
+ * Fonction qui va prendre l'e-mail à tester en paramètre et retourner true si l'e-mail est valide, false sinon
+ * @param {string} email : l'e-mail à tester
+ */
+function validerEmail(email) {
+  let regex = new RegExp(
+    '^(?=.{1,254}$)(?=.{1,64}@)[^\\s"(),:;<>@\\[\\\\\\]]+(?:\\.[^\\s"(),:;<>@\\[\\\\\\]]+)*@[^\\s"(),:;<>@\\[\\\\\\]]+\\.[^\\s"(),:;<>@\\[\\\\\\]]{2,}$',
+    "u"
+  );
+  let isValid = regex.test(email);
+  return isValid;
 }
 
 /*
@@ -122,11 +145,18 @@ function lancerJeu() {
     let inputEmail = document.getElementById("email");
     let email = inputEmail.value;
 
-    // Composer le score
-    let scoreEmail = `${score}/${i}`;
+    let isNomValid = validerNom(nom);
+    let isEmailValid = validerEmail(email);
 
+    
     // Rédiger et envoyer le mail
-    afficherEmail(nom, email, scoreEmail);
+    if (isNomValid && isEmailValid) {
+      // Composer le score
+      let scoreEmail = `${score}/${i}`;
+      afficherEmail(nom, email, scoreEmail);
+    } else {
+      console.log("Les champs ne sont pas valides, veuillez les remplir correctement !");
+    }
   });
 
   // Affichage du score au début
