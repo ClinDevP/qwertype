@@ -79,6 +79,38 @@ function validerEmail(email) {
 }
 
 /*
+ * Fonction qui prend en paramètre le score à envoyer et s'occupe de gérer le formulaire
+ */
+function gererFormulaire(score) {
+  // Récupérer la balise form
+  let baliseForm = document.querySelector("form");
+  // Récupérer les valeurs de nom, email et appeler la fonction afficherEmail
+  baliseForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let inputNom = document.getElementById("nom");
+    let nom = inputNom.value;
+
+    let inputEmail = document.getElementById("email");
+    let email = inputEmail.value;
+
+    let isNomValid = validerNom(nom);
+    let isEmailValid = validerEmail(email);
+
+    // Rédiger et envoyer le mail
+    if (isNomValid && isEmailValid) {
+      // Composer le score
+      let scoreEmail = `${score}/${i}`;
+      afficherEmail(nom, email, scoreEmail);
+    } else {
+      console.log(
+        "Les champs ne sont pas valides, veuillez les remplir correctement !"
+      );
+    }
+  });
+}
+
+/*
  * Fonction qui lance le jeu
  */
 function lancerJeu() {
@@ -133,31 +165,7 @@ function lancerJeu() {
     });
   }
 
-  // Récupérer la balise form
-  let baliseForm = document.querySelector("form");
-  // Récupérer les valeurs de nom, email et appeler la fonction afficherEmail
-  baliseForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    let inputNom = document.getElementById("nom");
-    let nom = inputNom.value;
-
-    let inputEmail = document.getElementById("email");
-    let email = inputEmail.value;
-
-    let isNomValid = validerNom(nom);
-    let isEmailValid = validerEmail(email);
-
-    
-    // Rédiger et envoyer le mail
-    if (isNomValid && isEmailValid) {
-      // Composer le score
-      let scoreEmail = `${score}/${i}`;
-      afficherEmail(nom, email, scoreEmail);
-    } else {
-      console.log("Les champs ne sont pas valides, veuillez les remplir correctement !");
-    }
-  });
+  gererFormulaire(score);
 
   // Affichage du score au début
   afficherResultat(score, i);
