@@ -56,58 +56,73 @@ function afficherEmail(nom, email, score) {
 }
 
 /**
- * Fonction qui va prendre le nom à tester en paramètre et retourner true si le nom est valide, false sinon
+ * Fonction qui va prendre le nom à tester en paramètre et valider qu'il est au bon format.
  * @param {string} nom : le nom à tester
+ * @throws {Error}
  */
 function validerNom(nom) {
   let regex = new RegExp("^[A-Za-z]{2,}$");
-  let isValid = regex.test(nom);
-  return isValid;
+  if (!regex.test(nom)) {
+    throw new Error(`Votre nom "${nom}" ne correspond pas au critère.`);
+  }
 }
 
 /**
- * Fonction qui va prendre l'e-mail à tester en paramètre et retourner true si l'e-mail est valide, false sinon
+ * Fonction qui va prendre l'e-mail à tester en paramètre et valider qu'il est au bon format.
  * @param {string} email : l'e-mail à tester
+ * @throws {Error}
  */
 function validerEmail(email) {
   let regex = new RegExp(
     '^(?=.{1,254}$)(?=.{1,64}@)[^\\s"(),:;<>@\\[\\\\\\]]+(?:\\.[^\\s"(),:;<>@\\[\\\\\\]]+)*@[^\\s"(),:;<>@\\[\\\\\\]]+\\.[^\\s"(),:;<>@\\[\\\\\\]]{2,}$',
     "u"
   );
-  let isValid = regex.test(email);
-  return isValid;
+  if (!regex.test(email)) {
+    throw new Error(
+      `Votre adresse mail "${email}" ne correspond pas au critère.`
+    );
+  }
 }
 
-/*
- * Fonction qui prend en paramètre le score à envoyer et s'occupe de gérer le formulaire
+/**
+ * Cette fonction affiche le message d'erreur passé en paramètre
+ * Si le span existe déjà, alors il est réutilisé pour ne pas multiplier les messages d'erreurs.
+ * @param {string} message
  */
-function gererFormulaire(score) {
-  // Récupérer la balise form
-  let baliseForm = document.querySelector("form");
-  // Récupérer les valeurs de nom, email et appeler la fonction afficherEmail
-  baliseForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+function afficherMessageErreur(message) {
+  let spanErreurMessage = document.getElementById("erreur-message");
 
+  if (!spanErreurMessage) {
+    let popup = document.querySelector(".popup");
+    spanErreurMessage = document.createElement("span");
+    spanErreurMessage.id = "erreur-message";
+    popup.append(spanErreurMessage);
+  }
+
+  spanErreurMessage.innerText = message;
+}
+
+/**
+ * Fonction qui prend en paramètre le score à envoyer.
+ * Récupère les informations dans le formulaire et appelle l'affichage de l'email avec les bon paramètres.
+ * @param {string} scoreEmail : le score
+ */
+function gererFormulaire(scoreEmail) {
+  try {
     let inputNom = document.getElementById("nom");
     let nom = inputNom.value;
+    validerNom(nom);
 
     let inputEmail = document.getElementById("email");
     let email = inputEmail.value;
+    validerEmail(email);
 
-    let isNomValid = validerNom(nom);
-    let isEmailValid = validerEmail(email);
-
-    // Rédiger et envoyer le mail
-    if (isNomValid && isEmailValid) {
-      // Composer le score
-      let scoreEmail = `${score}/${i}`;
-      afficherEmail(nom, email, scoreEmail);
-    } else {
-      console.log(
-        "Les champs ne sont pas valides, veuillez les remplir correctement !"
-      );
-    }
-  });
+    afficherMessageErreur("");
+    afficherEmail(nom, email, scoreEmail);
+  } catch (erreur) {
+    // Gérer l'erreur
+    afficherMessageErreur(erreur.message);
+  }
 }
 
 /*
@@ -165,7 +180,16 @@ function lancerJeu() {
     });
   }
 
-  gererFormulaire(score);
+  // Gestion de l'événement submit sur le formulaire de partage
+  // Récupérer la balise form
+  let baliseForm = document.querySelector("form");
+  // Récupérer les valeurs de nom, email et appeler la fonction afficherEmail
+  baliseForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    // Composer le score
+    let scoreEmail = `${score}/${i}`;
+    gererFormulaire(scoreEmail);
+  });
 
   // Affichage du score au début
   afficherResultat(score, i);
